@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitap Arşivim</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-book"></i> Kitap Arşivim</h1>
+            <nav>
+                <button class="nav-btn active" data-section="okuduklarim">
+                    <i class="fas fa-book-open"></i> Okuduklarım
+                </button>
+                <button class="nav-btn" data-section="okunacaklar">
+                    <i class="fas fa-bookmark"></i> Okunacaklar
+                </button>
+                <button class="nav-btn" data-section="kategoriler">
+                    <i class="fas fa-tags"></i> Kategoriler
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Arama ve Filtre Bölümü -->
+        <div class="search-section">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Kitap ara...">
+            </div>
+            <div class="filters">
+                <select id="categoryFilter">
+                    <option value="">Tüm Kategoriler</option>
+                </select>
+                <select id="ratingFilter">
+                    <option value="">Tüm Puanlar</option>
+                    <option value="5">⭐⭐⭐⭐⭐</option>
+                    <option value="4">⭐⭐⭐⭐</option>
+                    <option value="3">⭐⭐⭐</option>
+                    <option value="2">⭐⭐</option>
+                    <option value="1">⭐</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Okuduklarım Bölümü -->
+        <section id="okuduklarim" class="section active">
+            <div class="section-header">
+                <h2>Okuduğum Kitaplar</h2>
+                <button class="add-btn" onclick="openBookModal()">
+                    <i class="fas fa-plus"></i> Kitap Ekle
+                </button>
+            </div>
+            <div id="booksList" class="books-grid">
+                <!-- Kitaplar buraya dinamik olarak eklenecek -->
+            </div>
+        </section>
+
+        <!-- Okunacaklar Bölümü -->
+        <section id="okunacaklar" class="section">
+            <div class="section-header">
+                <h2>Okunacak Kitaplar</h2>
+                <button class="add-btn" onclick="openToReadModal()">
+                    <i class="fas fa-plus"></i> Kitap Ekle
+                </button>
+            </div>
+            <div id="toReadList" class="books-grid">
+                <!-- Okunacak kitaplar buraya dinamik olarak eklenecek -->
+            </div>
+        </section>
+
+        <!-- Kategoriler Bölümü -->
+        <section id="kategoriler" class="section">
+            <div class="section-header">
+                <h2>Kategoriler</h2>
+                <button class="add-btn" onclick="openCategoryModal()">
+                    <i class="fas fa-plus"></i> Kategori Ekle
+                </button>
+            </div>
+            <div id="categoriesList" class="categories-grid">
+                <!-- Kategoriler buraya dinamik olarak eklenecek -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Kitap Ekleme Modal -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBookModal()">&times;</span>
+            <h3>Kitap Ekle</h3>
+            <form id="bookForm">
+                <div class="form-group">
+                    <label for="bookTitle">Kitap Adı:</label>
+                    <input type="text" id="bookTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookAuthor">Yazar:</label>
+                    <input type="text" id="bookAuthor" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookCategory">Kategori:</label>
+                    <select id="bookCategory" required>
+                        <option value="">Kategori Seçin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bookRating">Puan:</label>
+                    <select id="bookRating">
+                        <option value="">Puan Ver</option>
+                        <option value="5">⭐⭐⭐⭐⭐</option>
+                        <option value="4">⭐⭐⭐⭐</option>
+                        <option value="3">⭐⭐⭐</option>
+                        <option value="2">⭐⭐</option>
+                        <option value="1">⭐</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bookNotes">Notlarım:</label>
+                    <textarea id="bookNotes" rows="4" placeholder="Bu kitap hakkındaki düşüncelerinizi yazın..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="readDate">Okunma Tarihi:</label>
+                    <input type="date" id="readDate">
+                </div>
+                <button type="submit">Kitap Ekle</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Okunacak Kitap Modal -->
+    <div id="toReadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeToReadModal()">&times;</span>
+            <h3>Okunacak Kitap Ekle</h3>
+            <form id="toReadForm">
+                <div class="form-group">
+                    <label for="toReadTitle">Kitap Adı:</label>
+                    <input type="text" id="toReadTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="toReadAuthor">Yazar:</label>
+                    <input type="text" id="toReadAuthor" required>
+                </div>
+                <div class="form-group">
+                    <label for="toReadCategory">Kategori:</label>
+                    <select id="toReadCategory">
+                        <option value="">Kategori Seçin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="toReadPriority">Öncelik:</label>
+                    <select id="toReadPriority">
+                        <option value="low">Düşük</option>
+                        <option value="medium" selected>Orta</option>
+                        <option value="high">Yüksek</option>
+                    </select>
+                </div>
+                <button type="submit">Listeye Ekle</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Kategori Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCategoryModal()">&times;</span>
+            <h3>Kategori Ekle</h3>
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label for="categoryName">Kategori Adı:</label>
+                    <input type="text" id="categoryName" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoryColor">Renk:</label>
+                    <input type="color" id="categoryColor" value="#3498db">
+                </div>
+                <button type="submit">Kategori Ekle</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Kitap Detay Modal -->
+    <div id="bookDetailModal" class="modal">
+        <div class="modal-content large">
+            <span class="close" onclick="closeBookDetailModal()">&times;</span>
+            <div id="bookDetailContent">
+                <!-- Kitap detayları buraya dinamik olarak gelecek -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
