@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
+  "functions": {
+    "server.js": {
+      "runtime": "@vercel/node@3"
     }
-  ],
+  },
   "routes": [
     {
       "src": "/api/(.*)",
@@ -15,5 +14,8 @@
       "src": "/(.*)",
       "dest": "/server.js"
     }
-  ]
-}
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+} 

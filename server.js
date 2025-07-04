@@ -11,12 +11,11 @@ const categoryRoutes = require('./routes/categories');
 const userRoutes = require('./routes/users');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Güvenlik middleware'leri
 app.use(helmet());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || '*',
     credentials: true
 }));
 
@@ -39,20 +38,26 @@ app.use(express.static('public'));
 
 // MongoDB bağlantısı
 let isMongoConnected = false;
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/kitaparsivim', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => {
-    console.log('✅ MongoDB bağlantısı başarılı');
-    isMongoConnected = true;
-})
-.catch(err => {
-    console.error('❌ MongoDB bağlantı hatası:', err);
-    console.log('⚠️  MongoDB bulunamadı. Test modu etkinleştiriliyor...');
-    console.log('🔧 Test kullanıcısı: admin / 123456');
-    isMongoConnected = false;
-});
+
+// Vercel'de her request'te bağlantı kontrolü
+async function connectToDatabase() {
+    if (mongoose.connection.readyState === 1) {
+        return true;
+    }
+    
+    try {
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/kitaparsivim', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log('✅ MongoDB bağlantısı başarılı');
+        return true;
+    } catch (err) {
+        console.error('❌ MongoDB bağlantı hatası:', err);
+        console.log('⚠️  MongoDB bulunamadı. Test modu etkinleştiriliyor...');
+        return false;
+    }
+}
 
 // Test modu için geçici veri store
 global.testMode = {
@@ -75,8 +80,8 @@ global.testMode = {
 };
 
 // MongoDB bağlantı durumunu kontrol eden middleware
-app.use((req, res, next) => {
-    req.isMongoConnected = isMongoConnected;
+app.use(async (req, res, next) => {
+    req.isMongoConnected = await connectToDatabase();
     next();
 });
 
@@ -108,10 +113,5 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Server başlatma
-app.listen(PORT, () => {
-    console.log(`🚀 Server ${PORT} portunda çalışıyor`);
-    console.log(`📚 Kitap Arşivim: http://localhost:${PORT}`);
-});
-
+// Vercel için export
 module.exports = app; 
